@@ -18,10 +18,12 @@ switch (command) {
 
 
 function myTweets() {
+  var fs = require("fs");
   var keys = require("./keys.js");
   var twitterKeys = keys.twitterKeys;
   var Twitter = require("twitter");
   var client = new Twitter(twitterKeys);
+  var tweetList = "";
   var params = {
     screen_name: "KnowNotJonSnow",
     count: 20
@@ -31,14 +33,21 @@ function myTweets() {
       return console.log(error);
     } else {
       for (var i = 0; i < tweets.length; i++) {
-        console.log(tweets[i].text);
+        tweetList += tweets[i].text + "\n";
       }
+      console.log(tweetList);
+      fs.appendFile("log.txt", tweetList, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      })
     }
   });
 }
 
 
 function spotifyThisSong(args) {
+  var fs = require("fs");
   var Spotify = require('node-spotify-api');
   var spotify = new Spotify({
     id: "6d3721a469fa4b7e9cc22b0c37b13758",
@@ -47,7 +56,7 @@ function spotifyThisSong(args) {
   var songTitle = "";
 
   if (args.length === 3) {
-    songTitle = '"the+sign"';
+    songTitle = "the sign";
   } else if (args.length > 3) {
     for (var i = 3; i < args.length; i++) {
       if (i > 3 && i < args.length) {
@@ -66,16 +75,20 @@ function spotifyThisSong(args) {
       return console.log('Error occurred: ' + err);
     } else {
       var songData = data.tracks.items[0];
-      console.log("Song Name: " + songData.name);
-      console.log("Artist: " + songData.artists[0].name);
-      console.log("Preview Link: " + songData.preview_url)
-      console.log("Album: " + songData.album.name)
+      var songInfo = "Song Name: " + songData.name + "\n" + "Artist: " + songData.artists[0].name + "\n" + "Preview Link: " + songData.preview_url + "\n" + "Album: " + songData.album.name;
+      console.log(songInfo);
+      fs.appendFile("log.txt", songInfo + "\n", function (err) {
+        if (err) {
+          console.log(err);
+        }
+      })
     }
   });
 }
 
 
 function movieThis(args) {
+  var fs = require("fs");
   var request = require("request");
   var movieTitle = "";
 
@@ -95,14 +108,13 @@ function movieThis(args) {
   console.log(movieURL);
   request(movieURL, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      console.log("Title: " + JSON.parse(body).Title);
-      console.log("Year: " + JSON.parse(body).Year);
-      console.log("IMDB rating: " + JSON.parse(body).Ratings[0].Value);
-      console.log("Rotten Tomatoes rating: " + JSON.parse(body).Ratings[1].Value);
-      console.log("Country: " + JSON.parse(body).Country);
-      console.log("Language: " + JSON.parse(body).Language);
-      console.log("Plot: " + JSON.parse(body).Plot);
-      console.log("Actors: " + JSON.parse(body).Actors);
+      var movieInfo = "Title: " + JSON.parse(body).Title + "\n" + "Year: " + JSON.parse(body).Year + "\n" + "IMDB rating: " + JSON.parse(body).Ratings[0].Value + "\n" + "Rotten Tomatoes rating: " + JSON.parse(body).Ratings[1].Value + "\n" + "Country: " + JSON.parse(body).Country + "\n" + "Language: " + JSON.parse(body).Language + "\n" + "Plot: " + JSON.parse(body).Plot + "\n" + "Actors: " + JSON.parse(body).Actors;
+      console.log(movieInfo);
+      fs.appendFile("log.txt", movieInfo + "\n", function (err) {
+        if (err) {
+          console.log(err);
+        }
+      })
     }
   });
 }
@@ -111,8 +123,6 @@ function movieThis(args) {
 function doWhatItSays(args) {
   var fs = require("fs");
   var argArr = ["zero", "one"];
-  //  var arg2 = process.argv[2];
-  //  var arg3 = process.argv[3];
   fs.readFile("random.txt", "utf8", function (error, data) {
     if (error) {
       return console.log(error);
