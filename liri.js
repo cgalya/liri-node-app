@@ -47,19 +47,20 @@ function spotifyThisSong(args) {
   var songTitle = "";
 
   if (args.length === 3) {
-    songTitle = '"the sign"';
+    songTitle = '"the+sign"';
   } else if (args.length > 3) {
     for (var i = 3; i < args.length; i++) {
       if (i > 3 && i < args.length) {
-        songTitle = songTitle + "+" + args[i];
+        songTitle = songTitle + '+' + args[i];
       } else {
         songTitle += args[i];
       }
     }
   }
+
   spotify.search({
     type: 'track',
-    query: songTitle
+    query: '"' + songTitle + '"'
   }, function (err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
@@ -109,7 +110,7 @@ function movieThis(args) {
 
 function doWhatItSays(args) {
   var fs = require("fs");
-  //  var argArr = [];
+  var argArr = ["zero", "one"];
   //  var arg2 = process.argv[2];
   //  var arg3 = process.argv[3];
   fs.readFile("random.txt", "utf8", function (error, data) {
@@ -118,10 +119,18 @@ function doWhatItSays(args) {
     }
     var dataArr = data.split(",");
     for (var i = 0; i < dataArr.length; i++) {
-      args.push(dataArr[i]);
+      argArr.push(dataArr[i]);
     }
-    if (args[2] === "spotify-this-song") {
-      spotifyThisSong(args);
+    switch (argArr[2]) {
+      case "my-tweets":
+        myTweets();
+        break;
+      case "spotify-this-song":
+        spotifyThisSong(argArr);
+        break;
+      case "movie-this":
+        movieThis(argArr);
+        break;
     }
   });
 }
